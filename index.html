@@ -12,10 +12,10 @@
                 //Création de la pièce
                 function createBoard(x,y){
                     var board = document.createElement("table");
-                    for (var i = 0; i < y; i++) {
+                    for (var i = 0; i < x; i++) {
                         var tr = document.createElement("tr");
                         board.appendChild(tr);
-                        for (var j = 0; j < x; j++) {
+                        for (var j = 0; j < y; j++) {
                             var td = document.createElement("td");
                             tr.appendChild(td);
                         }
@@ -120,12 +120,12 @@
                             case "A":
                                 switch(vacuumOrientation){
                                     case "N":
-                                        if(vacuumPositionY+1 < boardSize[0]){
+                                        if(vacuumPositionY+1 < boardSize[1]){
                                             vacuumPositionY = vacuumPositionY+1;
                                         }
                                         break;
                                     case "E":
-                                        if(vacuumPositionX + 1 < boardSize[1]){
+                                        if(vacuumPositionX + 1 < boardSize[0]){
                                             vacuumPositionX = vacuumPositionX+1;
                                         }    
                                         break;
