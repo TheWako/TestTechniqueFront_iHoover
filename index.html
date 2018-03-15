@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <script type="text/javascript">
+            window.onload = function(){
+                var vacuumOrientation = null;
+                var vacuumPositionX = null;
+                var vacuumPositionY = null;
+                var boardSize = [];
+
+                //Création de la pièce
+                function createBoard(x,y){
+                    var board = document.createElement("table");
+                    for (var i = 0; i < y; i++) {
+                        var tr = document.createElement("tr");
+                        board.appendChild(tr);
+                        for (var j = 0; j < x; j++) {
+                            var td = document.createElement("td");
+                            tr.appendChild(td);
+                        }
+                    }
+                    board.style.transform = "rotate(-90deg)";
+                    board.style.margin = "auto";
+                    document.body.appendChild(board);
+                    boardSize = [x,y];
+                }
+
+                var generateBoardButton = document.getElementById("generateBoardButton");
+
+                generateBoardButton.onclick = function(){
+                    var boardX = document.getElementById("boardInputX").value;
+                    var boardY = document.getElementById("boardInputY").value;
+                    var table = document.getElementsByTagName("table")[0];
+                    if(table){
+                        table.parentNode.removeChild(table);
+                    }
+                    createBoard(parseInt(boardX), parseInt(boardY));
+                };
+
+                //Création de l'aspirateur avec sa position et son orientation
+                function vacuumPosition(x, y, position){
+                    var table = document.getElementsByTagName("table")[0];
+                    var trs = table.getElementsByTagName("tr");
+                    var tds = null;
+                    var vacuumBlock = document.createElement("div");
+                    vacuumBlock.setAttribute("id", "vacuumBlock");
+
+                    for (var i=0; i<trs.length; i++)
+                    {
+                        tds = trs[i].getElementsByTagName("td");
+                        for (var n=0; n<trs.length; n++)
+                        {
+                            if(i==x && n==y){
+                                switch(position){
+                                    case "N":
+                                        vacuumBlock.style.borderWidth = "40px 0 40px 80px";
+                                        vacuumBlock.style.borderColor = "transparent transparent transparent #007bff";
+                                        break;
+                                    case "E":
+                                        vacuumBlock.style.borderWidth = "80px 40px 0 40px";
+                                        vacuumBlock.style.borderColor = "#007bff transparent transparent transparent";
+                                        break;
+                                    case "W":
+                                        vacuumBlock.style.borderWidth = "0 40px 80px 40px";
+                                        vacuumBlock.style.borderColor = "transparent transparent #007bff transparent";
+                                        break;
+                                    case "S":
+                                        vacuumBlock.style.borderWidth = "40px 80px 40px 0";
+                                        vacuumBlock.style.borderColor = "transparent #007bff transparent transparent";
+                                        break;
+
+                                }
+                                tds[n].appendChild(vacuumBlock);
+                            }
+                        }
+                    }
+                    vacuumOrientation = position;
+                    vacuumPositionX = x;
+                    vacuumPositionY = y;
+                }
+
+                var generateVacuumButton = document.getElementById("generateVacuumButton");
+
+                generateVacuumButton.onclick = function(){
+                    var vacuumX = document.getElementById("vacuumPositionInputX").value;
+                    var vacuumY = document.getElementById("vacuumPositionInputY").value;
+                    var vacuumOrientationVacuum = document.getElementById("vacuumOrientationInput").value;
+                    var vacuumBlock = document.getElementById("vacuumBlock");
+                    if(vacuumBlock){
+                        vacuumBlock.parentNode.removeChild(vacuumBlock);
+                    }
+                    vacuumPosition(parseInt(vacuumX), parseInt(vacuumY), vacuumOrientationVacuum);
+                };
+
+                //Envoi de l'instruction
+                function sendInstructions(instructionTab){
+                    console.log(instructionTab);
+                    var vacuumBlock = document.getElementById("vacuumBlock");
+                    vacuumBlock.parentNode.removeChild(vacuumBlock);
+                    var table = document.getElementsByTagName("table")[0];
+                    var trs = table.getElementsByTagName("tr");
+                    var tds = null;
+                    vacuumBlock.setAttribute("id", "vacuumBlock");
+                    console.log(vacuumOrientation);
+                    instructionTab = instructionTab.split("");
+                    for(var i in instructionTab){
+                        switch(instructionTab[i]){
+                            case "A":
+                                switch(vacuumOrientation){
+                                    case "N":
+                                        if(vacuumPositionY+1 < boardSize[0]){
+                                            vacuumPositionY = vacuumPositionY+1;
+                                        }
+                                            console.log(vacuumPositionY);
+                                            for (var j=0; j<trs.length; j++){
+                                                tds = trs[j].getElementsByTagName("td");
+                                                for (var k=0; k<trs.length; k++){
+                                                    if(j==vacuumPositionX && k==vacuumPositionY){
+                                                        tds[k].appendChild(vacuumBlock);
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        break;
+                                    case "E":
+                                        console.log(vacuumPositionX+1);
+                                        if(vacuumPositionX + 1 < boardSize[1]){
+                                            vacuumPositionX = vacuumPositionX+1;
+                                        }    
+                                            for (var j=0; j<trs.length; j++){
+                                                tds = trs[j].getElementsByTagName("td");
+                                                for (var k=0; k<trs.length; k++){
+                                                    if(j==vacuumPositionX && k==vacuumPositionY){
+                                                        tds[k].appendChild(vacuumBlock);
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        break;
+                                    case "W":
+                                        if(vacuumPositionX - 1 >= 0){
+                                            vacuumPositionX = vacuumPositionX-1;
+                                        }
+                                            for (var j=0; j<trs.length; j++){
+                                                tds = trs[j].getElementsByTagName("td");
+                                                for (var k=0; k<trs.length; k++){
+                                                    if(j==vacuumPositionX && k==vacuumPositionY){
+                                                        tds[k].appendChild(vacuumBlock);
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        break;
+                                    case "S":
+                                        if(vacuumPositionY - 1 >= 0){
+                                            vacuumPositionY = vacuumPositionY-1;
+                                        }
+                                            for (var j=0; j<trs.length; j++){
+                                                tds = trs[j].getElementsByTagName("td");
+                                                for (var k=0; k<trs.length; k++){
+                                                    if(j==vacuumPositionX && k==vacuumPositionY){
+                                                        tds[k].appendChild(vacuumBlock);
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        break;
+                                }
+                                break;
+                            case "D":
+                                for (var j=0; j<trs.length; j++){
+                                    tds = trs[j].getElementsByTagName("td");
+                                    for (var k=0; k<trs.length; k++){
+                                        if(j==vacuumPositionX && k==vacuumPositionY){
+                                            tds[k].appendChild(vacuumBlock);
+                                            break;
+                                        }
+                                    }
+                                }
+                                switch(vacuumOrientation){
+                                    case "N":
+                                        vacuumBlock.style.borderWidth = "80px 40px 0 40px";
+                                        vacuumBlock.style.borderColor = "#007bff transparent transparent transparent";
+                                        vacuumOrientation = "E";
+                                        break;
+                                    case "E":
+                                        vacuumBlock.style.borderWidth = "40px 80px 40px 0";
+                                        vacuumBlock.style.borderColor = "transparent #007bff transparent transparent";
+                                        vacuumOrientation = "S";
+                                        break;
+                                    case "W":
+                                        vacuumBlock.style.borderWidth = "40px 0 40px 80px";
+                                        vacuumBlock.style.borderColor = "transparent transparent transparent #007bff";
+                                        vacuumOrientation = "N";
+                                        break;
+                                    case "S":
+                                        vacuumBlock.style.borderWidth = "0 40px 80px 40px";
+                                        vacuumBlock.style.borderColor = "transparent transparent #007bff transparent";
+                                        vacuumOrientation = "W";
+                                        break;
+                                }
+                                break;
+                            case "G":
+                                for (var j=0; j<trs.length; j++){
+                                    tds = trs[j].getElementsByTagName("td");
+                                    for (var k=0; k<trs.length; k++){
+                                        if(j==vacuumPositionX && k==vacuumPositionY){
+                                            tds[k].appendChild(vacuumBlock);
+                                            break;
+                                        }
+                                    }
+                                }
+                                switch(vacuumOrientation){
+                                    case "N":
+                                        vacuumBlock.style.borderWidth = "0 40px 80px 40px";
+                                        vacuumBlock.style.borderColor = "transparent transparent #007bff transparent";
+                                        vacuumOrientation = "W";
+                                        break;
+                                    case "E":
+                                        vacuumBlock.style.borderWidth = "40px 0 40px 80px";
+                                        vacuumBlock.style.borderColor = "transparent transparent transparent #007bff";
+                                        vacuumOrientation = "N";
+                                        break;
+                                    case "W":
+                                        vacuumBlock.style.borderWidth = "40px 80px 40px 0";
+                                        vacuumBlock.style.borderColor = "transparent #007bff transparent transparent";
+                                        vacuumOrientation = "S";
+                                        break;
+                                    case "S":
+                                        vacuumBlock.style.borderWidth = "80px 40px 0 40px";
+                                        vacuumBlock.style.borderColor = "#007bff transparent transparent transparent";
+                                        vacuumOrientation = "E";
+                                        break;
+                                }
+                                break;
+                        }
+                    }
+                    alert("Position finale de l'aspirateur: ("+ vacuumPositionX + ", " + vacuumPositionY + ", " + vacuumOrientation + ")");
+                }
+
+                var instructionButton = document.getElementById("instructionButton");
+
+                instructionButton.onclick = function(){
+                    var instructionInput = document.getElementById("instructionInput").value;
+                    sendInstructions(instructionInput);
+                };
+            };
+        </script>
+        <style>
+            td {
+                height: 80px;
+                width: 80px;
+            }
+
+            table, td, tr {
+                border: 1px black solid;
+                border-collapse: collapse;
+            }
+
+            #vacuumBlock{
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-width: 0 40px 80px 40px;
+                border-color: transparent transparent #007bff transparent;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            Générer la piece:<br>
+            Dimension (x): <input type="number" id="boardInputX"><br>
+            Dimension (y): <input type="number" id="boardInputY"><br>
+            <button id="generateBoardButton">Valider</button>
+        </div><br>
+        <div>
+            Position de l'aspirateur:<br>
+            Position (x): <input type="number" id="vacuumPositionInputX"><br>
+            Position (y): <input type="number" id="vacuumPositionInputY"><br>
+            Orientation: <select id="vacuumOrientationInput">
+                            <option value="N">Nord</option>
+                            <option value="E">Est</option>
+                            <option value="S">Sud</option>
+                            <option value="W">Ouest</option>
+                        </select><br>
+            <button id="generateVacuumButton">Valider</button>
+        </div><br>
+        <div>
+            Instruction: <input type="text" id="instructionInput"><br>
+            <button id="instructionButton">Valider</button>
+        </div><br>
+    </body>
+</html>
