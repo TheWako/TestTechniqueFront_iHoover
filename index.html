@@ -93,16 +93,27 @@
                     vacuumPosition(parseInt(vacuumX), parseInt(vacuumY), vacuumOrientationVacuum);
                 };
 
-                //Envoi de l'instruction
-                function sendInstructions(instructionTab){
-                    console.log(instructionTab);
-                    var vacuumBlock = document.getElementById("vacuumBlock");
-                    vacuumBlock.parentNode.removeChild(vacuumBlock);
+                //Déplacement de l'aspirateur
+                function moveVacuum(x,y){
                     var table = document.getElementsByTagName("table")[0];
                     var trs = table.getElementsByTagName("tr");
                     var tds = null;
+                    var vacuumBlock = document.getElementById("vacuumBlock");
+                    vacuumBlock.parentNode.removeChild(vacuumBlock);
                     vacuumBlock.setAttribute("id", "vacuumBlock");
-                    console.log(vacuumOrientation);
+                    for (var i=0; i<trs.length; i++){
+                        tds = trs[i].getElementsByTagName("td");
+                        for (var j=0; j<trs.length; j++){
+                            if(i==x && j==y){
+                                tds[j].appendChild(vacuumBlock);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                //Envoi de l'instruction
+                function sendInstructions(instructionTab){
                     instructionTab = instructionTab.split("");
                     for(var i in instructionTab){
                         switch(instructionTab[i]){
@@ -112,72 +123,27 @@
                                         if(vacuumPositionY+1 < boardSize[0]){
                                             vacuumPositionY = vacuumPositionY+1;
                                         }
-                                            console.log(vacuumPositionY);
-                                            for (var j=0; j<trs.length; j++){
-                                                tds = trs[j].getElementsByTagName("td");
-                                                for (var k=0; k<trs.length; k++){
-                                                    if(j==vacuumPositionX && k==vacuumPositionY){
-                                                        tds[k].appendChild(vacuumBlock);
-                                                        break;
-                                                    }
-                                                }
-                                            }
                                         break;
                                     case "E":
-                                        console.log(vacuumPositionX+1);
                                         if(vacuumPositionX + 1 < boardSize[1]){
                                             vacuumPositionX = vacuumPositionX+1;
                                         }    
-                                            for (var j=0; j<trs.length; j++){
-                                                tds = trs[j].getElementsByTagName("td");
-                                                for (var k=0; k<trs.length; k++){
-                                                    if(j==vacuumPositionX && k==vacuumPositionY){
-                                                        tds[k].appendChild(vacuumBlock);
-                                                        break;
-                                                    }
-                                                }
-                                            }
                                         break;
                                     case "W":
                                         if(vacuumPositionX - 1 >= 0){
                                             vacuumPositionX = vacuumPositionX-1;
                                         }
-                                            for (var j=0; j<trs.length; j++){
-                                                tds = trs[j].getElementsByTagName("td");
-                                                for (var k=0; k<trs.length; k++){
-                                                    if(j==vacuumPositionX && k==vacuumPositionY){
-                                                        tds[k].appendChild(vacuumBlock);
-                                                        break;
-                                                    }
-                                                }
-                                            }
                                         break;
                                     case "S":
                                         if(vacuumPositionY - 1 >= 0){
                                             vacuumPositionY = vacuumPositionY-1;
                                         }
-                                            for (var j=0; j<trs.length; j++){
-                                                tds = trs[j].getElementsByTagName("td");
-                                                for (var k=0; k<trs.length; k++){
-                                                    if(j==vacuumPositionX && k==vacuumPositionY){
-                                                        tds[k].appendChild(vacuumBlock);
-                                                        break;
-                                                    }
-                                                }
-                                            }
                                         break;
                                 }
+                                moveVacuum(vacuumPositionX, vacuumPositionY);
                                 break;
                             case "D":
-                                for (var j=0; j<trs.length; j++){
-                                    tds = trs[j].getElementsByTagName("td");
-                                    for (var k=0; k<trs.length; k++){
-                                        if(j==vacuumPositionX && k==vacuumPositionY){
-                                            tds[k].appendChild(vacuumBlock);
-                                            break;
-                                        }
-                                    }
-                                }
+                                moveVacuum(vacuumPositionX, vacuumPositionY);
                                 switch(vacuumOrientation){
                                     case "N":
                                         vacuumBlock.style.borderWidth = "80px 40px 0 40px";
@@ -202,15 +168,7 @@
                                 }
                                 break;
                             case "G":
-                                for (var j=0; j<trs.length; j++){
-                                    tds = trs[j].getElementsByTagName("td");
-                                    for (var k=0; k<trs.length; k++){
-                                        if(j==vacuumPositionX && k==vacuumPositionY){
-                                            tds[k].appendChild(vacuumBlock);
-                                            break;
-                                        }
-                                    }
-                                }
+                                moveVacuum(vacuumPositionX, vacuumPositionY);
                                 switch(vacuumOrientation){
                                     case "N":
                                         vacuumBlock.style.borderWidth = "0 40px 80px 40px";
@@ -262,8 +220,6 @@
                 width: 0;
                 height: 0;
                 border-style: solid;
-                border-width: 0 40px 80px 40px;
-                border-color: transparent transparent #007bff transparent;
             }
         </style>
     </head>
