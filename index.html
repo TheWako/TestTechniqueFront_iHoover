@@ -49,7 +49,7 @@
                     for (var i=0; i<trs.length; i++)
                     {
                         tds = trs[i].getElementsByTagName("td");
-                        for (var n=0; n<trs.length; n++)
+                        for (var n=0; n<tds.length; n++)
                         {
                             if(i==x && n==y){
                                 switch(position){
@@ -103,7 +103,7 @@
                     vacuumBlock.setAttribute("id", "vacuumBlock");
                     for (var i=0; i<trs.length; i++){
                         tds = trs[i].getElementsByTagName("td");
-                        for (var j=0; j<trs.length; j++){
+                        for (var j=0; j<tds.length; j++){
                             if(i==x && j==y){
                                 tds[j].appendChild(vacuumBlock);
                                 break;
